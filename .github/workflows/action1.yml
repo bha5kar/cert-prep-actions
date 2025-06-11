@@ -1,0 +1,17 @@
+name: my first GH action workflow
+on:
+  push:
+    branches:
+      -main
+jobs:
+  examplejob: example
+  runs-on: ubuntu-latest
+
+  steps: list of steps
+  -name: checckout code
+  uses: actions/checkout@v3
+
+  -name: exec cmd
+  run: apt install python3 | python3 helloworld.py 
+  run: echo "Hello from shell"
+

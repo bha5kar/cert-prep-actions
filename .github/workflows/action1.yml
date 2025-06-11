@@ -14,4 +14,4 @@ jobs:
         uses: actions/checkout@v3
 
       - name: exec cmd
-        run: echo "Hello from shell"
+        run: apt install python3 | python3 heloworld.py

@@ -4,6 +4,8 @@ on:
         branches:
             - main
     workflow_dispatch:
+    schedule: 
+        - cron: '25 23 * * *'
 
 jobs:
     sumapp:

@@ -17,3 +17,4 @@ jobs:
         env:
           GREETING: Hello
         run: echo "Greeting: $GREETING"
+        shell: bash

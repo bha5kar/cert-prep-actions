@@ -1,4 +1,5 @@
 name: envinfo
+
 on:
   push:
     branches:
@@ -7,11 +8,12 @@ on:
 jobs:
   envinfo:
     runs-on: ubuntu-latest
+
     steps:
       - name: print current user and pwd
         run: |
-            id
-            pwd
+          id
+          pwd
 
       - name: env variable
         env:

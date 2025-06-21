@@ -12,5 +12,4 @@ jobs:
               uses: actions/checkout@v4
 
             - name: printOS
-              run: echo "cat /etc/os-release"
-              run: echo "timedatectl"
+              run: echo "cat /etc/os-release" && echo "timedatectl"

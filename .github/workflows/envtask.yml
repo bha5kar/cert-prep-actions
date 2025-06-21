@@ -8,6 +8,8 @@ on:
 jobs:
   envinfo:
     runs-on: ubuntu-latest
+    env:  # ✅ Define env here at the job level
+      GREETING: Hello
 
     steps:
       - name: print current user and pwd
@@ -16,7 +18,4 @@ jobs:
           pwd
 
       - name: env variable
-        env:
-          GREETING: Hello
         run: echo "Greeting: $GREETING"
-        shell: bash

@@ -16,5 +16,4 @@ jobs:
       - name: env variable
         env:
           GREETING: Hello
-
-        run: echo"Greeting: $GREETING"
+          run: echo "Greeting: $GREETING"

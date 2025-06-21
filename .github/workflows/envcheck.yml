@@ -1,0 +1,16 @@
+name: envcheck
+on:
+    push: 
+        branches:
+            main
+
+jobs:
+    envcheck:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+
+            - name: printOS
+              run: echo "cat /etc/os-release"
+              run: echo "timedatectl"

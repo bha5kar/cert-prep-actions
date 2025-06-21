@@ -14,4 +14,8 @@ jobs:
             - name: printOS
               run: |
                cat /etc/os-release
-               timedatectl
+            
+            - name: date
+              env:
+                DATE_FMT: "+%Y-%M-%D %H:%M:%S"
+              run: date "$DATE_FMT"

@@ -17,5 +17,5 @@ jobs:
             
             - name: date
               env:
-                DATE_FMT: "+%Y-%M-%D %H:%M:%S"
+                DATE_FMT: "+%Y-%m-%d %H:%M:%S"
               run: date "$DATE_FMT"

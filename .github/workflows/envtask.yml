@@ -1,0 +1,20 @@
+name: envinfo
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  envinfo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print current user and pwd
+        run: |
+            id
+            pwd
+
+      - name: env variable
+        env:
+          GREETING: Hello
+
+        run: echo"Greeting: $GREETING"

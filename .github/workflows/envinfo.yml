@@ -16,6 +16,9 @@ jobs:
           echo "my name is $MY_NAME and its $MY_DAY th day" 
   
   print:
+    needs: envinfo
+    runs-on: ubuntu-latest
+    steps:
       - name: checkout
         uses: action/checkout@v4
         
@@ -23,4 +26,4 @@ jobs:
         run: |
          pwd
          ls
-  needs: envinfo
+  

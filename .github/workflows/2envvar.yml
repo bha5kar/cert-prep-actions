@@ -1,8 +1,10 @@
 name: printinfo
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+    
 jobs:
   infojob:
     runs-on: ubuntu-latest

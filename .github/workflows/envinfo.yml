@@ -1,0 +1,24 @@
+name: envinfo
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  envinfo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: env var print
+        env:
+          MY_NAME: devops
+          MY_DAY: 8
+        run: |
+          echo "my name is $MY_NAME and its $MY_DAY th day" 
+
+      - name: checkout
+        uses: action/checkout@v4
+        run: |
+         pwd
+         ls
+        needs: env var print
+        

@@ -1,0 +1,16 @@
+name: printinfo
+on:
+  push:
+    branches:
+      - main
+jobs:
+  infojob:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 2env var
+        env:
+          WHOAMI: devopslearner
+          DAY: 7
+
+        run: echo "I am $WHOAMI and its day $DAY"

@@ -14,11 +14,13 @@ jobs:
           MY_DAY: 8
         run: |
           echo "my name is $MY_NAME and its $MY_DAY th day" 
-
+  
+  print:
       - name: checkout
         uses: action/checkout@v4
+        
+      - name: print 
         run: |
          pwd
          ls
-        needs: env var print
-        
+  needs: envinfo

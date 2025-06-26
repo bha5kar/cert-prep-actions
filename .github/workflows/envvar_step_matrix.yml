@@ -1,0 +1,28 @@
+name: variables passing & matrix & condition
+on:
+  workflow_dispatch:
+
+jobs:
+  
+  envvar_step_matrix:
+    strategy.matrix.os: [20.04, 22.04]
+    runs-on: ubuntu-${{ matrix.os }}
+
+    env:
+      MY_NAME: devopslearner
+      MY_DAY: 10
+
+    steps:
+      
+      - name: print two variables
+        run: |
+          echo "$MY_NAME on $MY_DAY"
+          echo "RUNTIME_VAR = Hello" >> $GITHUB_ENV
+
+      - name: take runtimevar
+        run: |
+          echo "$RUNTIME_VAR"
+
+      - name: shell condition
+        if: ${{ !exists('skip.txt') }}
+        run: echo " skip file not there so printing"

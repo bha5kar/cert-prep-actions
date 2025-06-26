@@ -19,12 +19,18 @@ jobs:
       - name: print two variables
         run: |
           echo "$MY_NAME on $MY_DAY"
-          echo "RUNTIME_VAR = Hello" >> $GITHUB_ENV
+          echo "RUNTIME_VAR = hello" >> $GITHUB_ENV
 
       - name: take runtimevar
         run: |
           echo "$RUNTIME_VAR"
 
-      - name: shell condition
-        if: ${{ !exists('skip.txt') }}
-        run: echo " skip file not there so printing"
+      - name: Skip if skip.txt exists
+        run: |
+          if [ -f skip.txt ]; then
+          echo "File exists, skipping step."
+          exit 0
+          fi
+          echo "File not found, doing task..."
+          # Your actual task here
+        continue-on-error: true

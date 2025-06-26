@@ -5,7 +5,9 @@ on:
 jobs:
   
   envvar_step_matrix:
-    strategy.matrix.os: [20.04, 22.04]
+    strategy:
+      matrix:
+        os: [20.04, 22.04]
     runs-on: ubuntu-${{ matrix.os }}
 
     env:

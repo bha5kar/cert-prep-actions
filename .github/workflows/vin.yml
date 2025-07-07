@@ -32,9 +32,9 @@ jobs:
           else
             ischanged="false"
           fi  
-
+          filechanged_clean=$(echo "$filechanged" | tr '\n' ',' | sed 's/,$//')
           echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"
-          echo "filename=$filechanged" >> "$GITHUB_OUTPUT"
+          echo "filename=$filechanged_clean" >> "$GITHUB_OUTPUT"
 
   copyfile:
     needs: checkchanges
@@ -48,8 +48,13 @@ jobs:
           FILE: ${{ needs.checkchanges.outputs.file }}
         run: |
           if [[ "$STATUS" = "true" ]];then
-             echo "moving ahead"
-             cp $FILE /home/bha5kar/workspace/craftista/
+            echo "moving ahead"
+            IFS=',' read -ra files <<< "$FILE"
+            for f in "${files[@]}"; do
+              echo "Copying $f to server"
+              cp "$f" /home/bha5kar/workspace/craftista
+            done
+
           else 
             echo "nochanges on plugin so exiting"
           fi

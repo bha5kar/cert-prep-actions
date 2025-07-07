@@ -59,7 +59,7 @@ jobs:
             IFS=',' read -ra files <<< "$FILE"
             for src_file in "${files[@]}"; do
               echo "processing $src_file"
-              plugin_subdir=$(echo "$src_file"|awk -F'/' '{print $(NF-2)}')
+              plugin_subdir=$(echo "$src_file"|awk -F'/' '{print $(NF-1)}')
               echo "subdir for $src_file is $plugin_subdir"
 
               dest_dir="/home/bha5kar/workspace/craftista/plugin/$plugin_subdir"

@@ -53,7 +53,10 @@ jobs:
           STATUS: ${{ needs.checkchanges.outputs.status }}
           FILE: ${{ needs.checkchanges.outputs.file }}
         run: |
-          pwd
+
+          Write-Host "GITHUB_WORKSPACE = $env:GITHUB_WORKSPACE"
+          Get-ChildItem -Recurse $env:GITHUB_WORKSPACE
+          
           if ($env:STATUS -eq "true") {
             Write-Host "Copying plugin files..."
             $files = $env:FILE -split ","
@@ -68,7 +71,7 @@ jobs:
 
               Write-Host "Subdir: $plugin_subdir"
 
-              $dest_dir = "C:\$plugin_subdir"
+              $dest_dir = "D:\$plugin_subdir"
               $dest_file = Join-Path $dest_dir (Split-Path $src_file -Leaf)
 
               if (-Not (Test-Path $dest_dir)) {

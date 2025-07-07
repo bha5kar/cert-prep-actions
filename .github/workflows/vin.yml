@@ -48,11 +48,31 @@ jobs:
           FILE: ${{ needs.checkchanges.outputs.file }}
         run: |
           if [[ "$STATUS" = "true" ]];then
-            echo "moving ahead"
+            # echo "moving ahead for static path"
+            # IFS=',' read -ra files <<< "$FILE"
+            # for f in "${files[@]}"; do
+            #   echo "Copying $f to server"
+            #   cp "$f" /home/bha5kar/workspace/craftista/plugin
+            # done
+            cd $GITHUB_WORKSPACE
+
             IFS=',' read -ra files <<< "$FILE"
-            for f in "${files[@]}"; do
-              echo "Copying $f to server"
-              cp "$f" /home/bha5kar/workspace/craftista/plugin/
+            for src_file in "{files[@]}"; do
+              echo "processing $src_file"
+              plugin_subdir=$(echo "$src_file"|awk -F'/' '{print $(NF-2)}')
+              echo "subdir for $src_file is $plugin_subdir"
+
+              dest_dir="/home/bha5kar/workspace/craftista/plugin/$plugin_subdir"
+              dest_file="$dest_dir/$(basename "$src_file")"
+              if [ ! -d "$dest_dir" ]; then
+                echo "Directory $dest_dir does not exist. Creating..."
+                mkdir -p "$dest_dir"
+              else
+                echo "Directory $dest_dir exists. Will replace file."
+              fi
+
+              cp "$src_file" "$dest_file"
+              echo "Copied $src_file -> $dest_file"
             done
 
           else 

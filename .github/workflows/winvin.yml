@@ -1,0 +1,85 @@
+name: file copy to required folder
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  checkchanges:
+    if: github.event.pull_request.merged == true
+    outputs:
+      status: ${{ steps.changes.outputs.pluginchange }}
+      file: ${{ steps.changes.outputs.filename }}
+
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed plugin files
+        id: changes
+        shell: pwsh
+        run: |
+          git fetch origin
+          $base = "${{ github.event.pull_request.base.sha }}"
+          $head = "${{ github.sha }}"
+
+          Write-Host "Diffing from $base to $head"
+          git diff --name-only $base $head
+          $allChanges = git diff --name-only $base $head
+          $pluginChanges = $allChanges | Where-Object { $_ -like "*plugin*" }
+
+          if ($pluginChanges) {
+            $ischanged = "true"
+          } else {
+            $ischanged = "false"
+          }
+
+          $pluginChangesStr = ($pluginChanges -join ",").TrimEnd(",")
+
+          Write-Output "pluginchange=$ischanged" >> $env:GITHUB_OUTPUT
+          Write-Output "filename=$pluginChangesStr" >> $env:GITHUB_OUTPUT
+
+  copyfile:
+    needs: checkchanges
+    runs-on: windows-latest
+    steps:
+      - name: Copy plugin files to server
+        shell: pwsh
+        env:
+          STATUS: ${{ needs.checkchanges.outputs.status }}
+          FILE: ${{ needs.checkchanges.outputs.file }}
+        run: |
+          if ($env:STATUS -eq "true") {
+            Write-Host "Copying plugin files..."
+            $files = $env:FILE -split ","
+
+            foreach ($src_file in $files) {
+              Write-Host "Processing $src_file"
+
+              # Extract plugin subdirectory (e.g., abc from CustomUI/plugins/abc/1.js)
+              $parts = $src_file -split "/"
+              $plugin_subdir = $parts[$parts.Length - 1]
+              Write-Host "Subdir: $plugin_subdir"
+
+              $dest_dir = "C:\$plugin_subdir"
+              $dest_file = Join-Path $dest_dir (Split-Path $src_file -Leaf)
+
+              if (-Not (Test-Path $dest_dir)) {
+                Write-Host "Creating directory $dest_dir"
+                New-Item -ItemType Directory -Path $dest_dir -Force | Out-Null
+              } else {
+                Write-Host "Directory $dest_dir exists"
+              }
+
+              $src_full = Join-Path $env:GITHUB_WORKSPACE $src_file
+
+              Write-Host "Copying $src_full to $dest_file"
+              Copy-Item $src_full $dest_file -Force
+            }
+          } else {
+            Write-Host "No plugin changes detected. Skipping copy."
+          }

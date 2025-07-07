@@ -32,7 +32,7 @@ jobs:
           else
             ischanged="false"
           fi  
-          
+
           echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"
           echo "filename=$filechanged" >> "$GITHUB_OUTPUT"
 
@@ -49,6 +49,7 @@ jobs:
         run: |
           if [[ "$STATUS" = "true" ]];then
              echo "moving ahead"
+             cp $FILE /home/bha5kar/workspace/craftista/
           else 
             echo "nochanges on plugin so exiting"
           fi

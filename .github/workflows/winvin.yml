@@ -53,6 +53,7 @@ jobs:
           STATUS: ${{ needs.checkchanges.outputs.status }}
           FILE: ${{ needs.checkchanges.outputs.file }}
         run: |
+          pwd
           if ($env:STATUS -eq "true") {
             Write-Host "Copying plugin files..."
             $files = $env:FILE -split ","

@@ -1,14 +1,15 @@
 name: file copy to required folder
 on:
-  # pull_request:
-  #   types:
-  #     - closed
-  push:
-    branches:
-      - release
+  pull_request:
+   types:
+     - closed
+  # push:
+  #   branches:
+  #     - release
 
 jobs:
   checkchanges:
+    if: github.event.pull_request.merged == true
     outputs:
       status: ${{ steps.changes.outputs.pluginchange }}
       file: ${{ steps.changes.outputs.filename }}
@@ -41,7 +42,6 @@ jobs:
     runs-on: self-hosted  
     steps:
       
-
       - name: copy operation
         env:
           STATUS: ${{ needs.checkchanges.outputs.status }}

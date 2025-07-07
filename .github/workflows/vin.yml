@@ -26,7 +26,7 @@ jobs:
         run: |
           git fetch origin
           git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
-          filechanged=(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin')
+          filechanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin')
           ischanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
           
           echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"

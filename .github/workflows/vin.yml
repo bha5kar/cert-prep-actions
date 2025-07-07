@@ -26,8 +26,12 @@ jobs:
         run: |
           git fetch origin
           git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
-          filechanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin')
-          ischanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
+          filechanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
+          if [[ -n "$filechanged" ]];then
+            ischanged="true"
+          else
+            ischanged="false"
+          fi  
           
           echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"
           echo "filename=$filechanged" >> "$GITHUB_OUTPUT"
@@ -47,6 +51,6 @@ jobs:
              echo "moving ahead"
           else 
             echo "nochanges on plugin so exiting"
-
+          fi
 
 

@@ -1,0 +1,82 @@
+name: file copy to required folder
+on:
+  pull_request:
+   types:
+     - closed
+  # push:
+  #   branches:
+  #     - release
+
+jobs:
+  checkchanges:
+    if: github.event.pull_request.merged == true
+    outputs:
+      status: ${{ steps.changes.outputs.pluginchange }}
+      file: ${{ steps.changes.outputs.filename }}
+      
+    runs-on: self-hosted
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changes
+        run: |
+          git fetch origin
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+          filechanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
+          if [[ -n "$filechanged" ]];then
+            ischanged="true"
+          else
+            ischanged="false"
+          fi  
+          filechanged_clean=$(echo "$filechanged" | tr '\n' ',' | sed 's/,$//')
+          echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"
+          echo "filename=$filechanged_clean" >> "$GITHUB_OUTPUT"
+
+  copyfile:
+    needs: checkchanges
+    runs-on: self-hosted  
+    steps:
+      
+      - name: copy operation
+        env:
+          STATUS: ${{ needs.checkchanges.outputs.status }}
+          FILE: ${{ needs.checkchanges.outputs.file }}
+        run: |
+          if [[ "$STATUS" = "true" ]];then
+            # echo "moving ahead for static path"
+            # IFS=',' read -ra files <<< "$FILE"
+            # for f in "${files[@]}"; do
+            #   echo "Copying $f to server"
+            #   cp "$f" /home/bha5kar/workspace/craftista/plugin
+            # done
+            cd $GITHUB_WORKSPACE
+
+            IFS=',' read -ra files <<< "$FILE"
+            for src_file in "${files[@]}"; do
+              echo "processing $src_file"
+              plugin_subdir=$(echo "$src_file"|awk -F'/' '{print $(NF-1)}')
+              echo "subdir for $src_file is $plugin_subdir"
+
+              dest_dir="/home/bha5kar/workspace/craftista/plugin/$plugin_subdir"
+              dest_file="$dest_dir/$(basename "$src_file")"
+              if [ ! -d "$dest_dir" ]; then
+                echo "Directory $dest_dir does not exist. Creating..."
+                mkdir -p "$dest_dir"
+              else
+                echo "Directory $dest_dir exists. Will replace file."
+              fi
+
+              cp "$src_file" "$dest_file"
+              echo "Copied $src_file -> $dest_file"
+            done
+
+          else 
+            echo "nochanges on plugin so exiting"
+          fi
+
+

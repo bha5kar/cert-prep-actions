@@ -62,7 +62,9 @@ jobs:
 
               # Extract plugin subdirectory (e.g., abc from CustomUI/plugins/abc/1.js)
               $parts = $src_file -split "/"
-              $plugin_subdir = $parts[$parts.Length - 1]
+
+              $plugin_subdir = $parts[$parts.Length - 2]
+
               Write-Host "Subdir: $plugin_subdir"
 
               $dest_dir = "C:\$plugin_subdir"

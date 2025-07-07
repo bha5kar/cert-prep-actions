@@ -9,6 +9,10 @@ on:
 
 jobs:
   checkchanges:
+    outputs:
+      status: ${{ steps.changes.outputs.pluginchange }}
+      file: ${{ steps.changes.outputs.filename }}
+      
     runs-on: self-hosted
     steps:
 
@@ -22,9 +26,27 @@ jobs:
         run: |
           git fetch origin
           git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
-          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin'
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
-          echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
+          filechanged=(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin')
+          ischanged=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'plugin' || true)
+          
+          echo "pluginchange=$ischanged" >> "$GITHUB_OUTPUT"
+          echo "filename=$filechanged" >> "$GITHUB_OUTPUT"
+
+  copyfile:
+    needs: checkchanges
+    runs-on: self-hosted  
+    steps:
+      
+
+      - name: copy operation
+        env:
+          STATUS: ${{ needs.checkchanges.outputs.status }}
+          FILE: ${{ needs.checkchanges.outputs.file }}
+        run: |
+          if [[ "$STATUS" = "true" ]];then
+             echo "moving ahead"
+          else 
+            echo "nochanges on plugin so exiting"
 
 
 

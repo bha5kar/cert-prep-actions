@@ -52,7 +52,7 @@ jobs:
             IFS=',' read -ra files <<< "$FILE"
             for f in "${files[@]}"; do
               echo "Copying $f to server"
-              cp "$f" /home/bha5kar/workspace/craftista
+              cp "$f" /home/bha5kar/workspace/craftista/plugin/
             done
 
           else 

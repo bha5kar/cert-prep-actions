@@ -26,7 +26,7 @@ jobs:
         id: changes
         run: |
           git fetch origin
-          echo "Diffing from base ${{ github.event.pull_request.base.sha }} to merge commit ${{ github.sha }}"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
 
           filechanged=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep 'plugin' || true)
           #git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
